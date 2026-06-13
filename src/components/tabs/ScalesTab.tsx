@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { NOTES, SCALE_FORMULAS, buildScale } from '@/lib/theory';
 import { playScaleUp, playScaleDown, playChordTogether } from '@/lib/audio';
 import PianoKeys from '@/components/ui/PianoKeys';
+import SheetMusic from '@/components/ui/SheetMusic';
 import PlayBtn from '@/components/ui/PlayBtn';
 import type { ScaleKey } from '@/types';
 
@@ -66,6 +67,9 @@ export default function ScalesTab() {
         </div>
 
         <PianoKeys highlightedNotes={scaleIdxs} rootNote={rootIdx} />
+        <div style={{ marginTop: 10 }}>
+          <SheetMusic noteIndices={scaleIdxs} rootIdx={rootIdx} color={formula.color} layout="scale" />
+        </div>
 
         <div style={{ marginTop: 10, display: 'flex', gap: 4, flexWrap: 'wrap' }}>
           {scaleNotes.map((n, i) => (

@@ -4,6 +4,7 @@ import { NOTES, CHORD_TYPES, buildChord } from '@/lib/theory';
 import { playChordTogether, playChordArp } from '@/lib/audio';
 import PianoKeys from '@/components/ui/PianoKeys';
 import ChordVoiceVisual from '@/components/ui/ChordVoiceVisual';
+import SheetMusic from '@/components/ui/SheetMusic';
 import PlayBtn from '@/components/ui/PlayBtn';
 import type { ChordKey } from '@/types';
 
@@ -75,6 +76,9 @@ export default function ChordsTab() {
         </div>
 
         <PianoKeys highlightedNotes={chordIdxs.map(i => i % 12)} rootNote={rootIdx} />
+        <div style={{ marginTop: 10 }}>
+          <SheetMusic noteIndices={chordIdxs.map(i => i % 12)} rootIdx={rootIdx} color={color} layout="chord" />
+        </div>
         <ChordVoiceVisual noteIndices={chordIdxs.map(i => i % 12)} rootIdx={rootIdx} color={color} />
 
         <div style={{ marginTop: 10, display: 'flex', gap: 4 }}>

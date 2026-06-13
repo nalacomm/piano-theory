@@ -139,9 +139,33 @@ function generateKeyboardQuestions(): KeyboardQuestion[] {
   return qs;
 }
 
+const MC_EXPLANATIONS: Record<string, string> = {
+  'Dorian differs from natural minor by which degree?': 'Dorian has a natural (raised) 6th compared to Aeolian (natural minor). Both have ♭3 and ♭7. That raised 6 is what gives Dorian its warmer, less dark sound.',
+  "Lydian's signature note vs major scale?": 'Lydian is a major scale with only one change — the 4th is raised by a half step (♯4). This creates a dreamy, floating quality because of the tritone between the root and the 4th.',
+  'Mixolydian is the same as major except?': 'Mixolydian = major with one flat — the 7th. The I chord stays major, but the ♭7 creates a blues-gospel pocket. Every other degree is identical to major.',
+  'Which mode lives on the II chord of a major key?': 'Modes are named by which scale degree they start on. Dorian starts on degree II. D Dorian uses the exact same notes as C major — just treats D as home.',
+  'Which mode lives on the V chord of a major key?': 'Mixolydian lives on degree V of a major key. G Mixolydian and C major share every note — G just becomes the home note instead of C.',
+  'A minor is the relative minor of which key?': 'Relative minor starts on the 6th degree of the major scale. Count up C major: C D E F G A — A is the 6th. A minor and C major share all 7 notes.',
+  'Degree I in Lydian has what chord quality?': 'In Lydian, the 1-3-5 are all natural (no alterations), so the I chord is a major triad. Only the 4th is raised — that doesn\'t affect the I chord\'s quality.',
+  "Phrygian's defining interval vs major?": 'Phrygian has a flat 2nd (♭2). That half step immediately above the root creates maximum tension. Phrygian also has ♭3, ♭6, ♭7 — but the ♭2 is the signature.',
+  'D Dorian and C major share the same notes?': 'True. Both use C D E F G A B — but Dorian treats D as home and Aeolian/Ionian treat C as home. Same notes, different tonal center changes the feel completely.',
+  'What interval separates C and E?': 'C to E = 4 half steps = a major 3rd. Count: C→C#(1)→D(2)→D#(3)→E(4). Major 3rd = 4 semitones. Minor 3rd = 3 semitones.',
+  'The V chord naturally resolves to?': 'V → I is the strongest harmonic motion in tonal music. The V chord contains the leading tone (7th degree) which wants to resolve up a half step to the tonic (I).',
+  'Which scale adds a ♭5 to minor pentatonic?': 'The blues scale = minor pentatonic + one note: the ♭5 (tritone/blue note). Minor penta has 5 notes; blues has 6. That ♭5 is the "bent" note that defines blues phrasing.',
+  'Aeolian lives on which scale degree?': 'Aeolian (natural minor) starts on the 6th degree of its parent major key. A Aeolian is the relative minor of C major — same notes, A as home.',
+  'How many notes in a pentatonic scale?': 'Penta = five. Major pentatonic removes the 4th and 7th from major. Minor pentatonic removes the 2nd and 6th from natural minor. 5 notes each.',
+  'Dominant 7th = major triad plus?': 'Dominant 7th = 1-3-5-♭7. The ♭7 (flat 7th) is what makes it dominant and creates tension. Add a natural 7 instead and you get major 7th — jazzy and smooth, not tense.',
+  'The ♭VII chord in Mixolydian is what quality?': 'In Mixolydian, the ♭VII chord is built on the flatted 7th degree. Stack 1-3-5 on that degree and you get a major triad. The ♭VII → I move is the gospel/rock anthem formula.',
+  'Which mode is minor with a raised 6th?': 'Dorian is the minor mode with a natural (raised) 6th. Aeolian has a ♭6. That one note difference lifts Dorian\'s mood above the pure darkness of natural minor.',
+  "Locrian's I chord quality?": 'Locrian has a ♭5, which turns the I chord into a diminished triad (1-♭3-♭5). A diminished chord has no stable root, so Locrian has no real tonal center.',
+  'Relative minor starts on which degree?': 'The relative minor starts on the 6th degree of the major scale. In C major: count C(1) D(2) E(3) F(4) G(5) A(6). A minor is the relative minor.',
+  "In number system 1-4-5, the 4 means?": 'The number system counts scale degrees. In C major: 1=C, 2=D, 3=E, 4=F, 5=G. "The 4" means the chord built on the 4th scale degree — in C, that\'s an F major chord.',
+};
+
 function buildQuestionPool(): AnyQuestion[] {
   const mc: MCQuestion[] = QUIZ_QUESTIONS.map(q => ({
     kind: 'mc', prompt: q.q, answer: q.a, choices: q.c,
+    explanation: MC_EXPLANATIONS[q.q],
   }));
   const kb = generateKeyboardQuestions();
   // Interleave: roughly 60% MC, 40% keyboard
@@ -396,12 +420,18 @@ export default function QuizTab() {
         <div style={{ marginTop: 10 }}>
           {!isKB && (
             <div style={{
-              padding: '10px 14px', borderRadius: 8, marginBottom: 10, fontSize: 13,
+              padding: '10px 14px', borderRadius: 8, marginBottom: 10,
               background: correct ? 'rgba(74,222,128,0.08)' : 'rgba(248,113,113,0.08)',
               border: `1px solid ${correct ? 'var(--green)' : 'var(--red)'}`,
-              color: correct ? 'var(--green)' : 'var(--red)',
             }}>
-              {correct ? 'Correct!' : `Answer: ${(q as MCQuestion).answer}`}
+              <div style={{ fontSize: 13, fontWeight: 700, color: correct ? 'var(--green)' : 'var(--red)', marginBottom: correct ? 0 : 6 }}>
+                {correct ? 'Correct!' : `Correct answer: ${(q as MCQuestion).answer}`}
+              </div>
+              {!correct && (q as MCQuestion).explanation && (
+                <div style={{ fontSize: 12, color: 'var(--text2)', lineHeight: 1.55 }}>
+                  {(q as MCQuestion).explanation}
+                </div>
+              )}
             </div>
           )}
           <button onClick={next} style={{
