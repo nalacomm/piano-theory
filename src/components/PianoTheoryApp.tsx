@@ -1,0 +1,97 @@
+'use client';
+import { useState } from 'react';
+import { useAudio } from '@/hooks/useAudio';
+import TrainTab from './tabs/TrainTab';
+import ModesTab from './tabs/ModesTab';
+import ScalesTab from './tabs/ScalesTab';
+import ChordsTab from './tabs/ChordsTab';
+import CircleTab from './tabs/CircleTab';
+import QuizTab from './tabs/QuizTab';
+import AskAITab from './tabs/AskAITab';
+
+type Tab = 'train' | 'modes' | 'scales' | 'chords' | 'circle' | 'quiz' | 'ai';
+
+const TABS: { id: Tab; label: string; icon: string }[] = [
+  { id: 'train',  label: 'Train',   icon: '⚡' },
+  { id: 'modes',  label: 'Modes',   icon: 'M' },
+  { id: 'scales', label: 'Scales',  icon: 'S' },
+  { id: 'chords', label: 'Chords',  icon: 'C' },
+  { id: 'circle', label: 'Circle',  icon: '○' },
+  { id: 'quiz',   label: 'Quiz',    icon: '?' },
+  { id: 'ai',     label: 'Ask AI',  icon: '✦' },
+];
+
+export default function PianoTheoryApp() {
+  const [activeTab, setActiveTab] = useState<Tab>('train');
+  const { audioUnlocked, unlock } = useAudio();
+
+  return (
+    <div style={{
+      maxWidth: 520, margin: '0 auto', minHeight: '100vh',
+      display: 'flex', flexDirection: 'column',
+      background: 'var(--bg)', fontFamily: "'Courier New', Courier, monospace",
+    }}>
+      {/* Header */}
+      <div style={{
+        position: 'sticky', top: 0, zIndex: 10,
+        background: 'var(--bg)', borderBottom: '1px solid var(--border)',
+        padding: '10px 16px',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+      }}>
+        <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--green)', letterSpacing: 1 }}>
+          Piano Theory
+        </div>
+        {!audioUnlocked && (
+          <button
+            onClick={unlock}
+            style={{
+              fontSize: 11, padding: '4px 10px', borderRadius: 6,
+              background: 'var(--surface2)', border: '1px solid var(--border)',
+              color: 'var(--text3)', cursor: 'pointer', fontFamily: 'inherit',
+            }}>
+            Enable Audio
+          </button>
+        )}
+        {audioUnlocked && (
+          <span style={{ fontSize: 10, color: 'var(--green)' }}>♪ Audio On</span>
+        )}
+      </div>
+
+      {/* Tab bar */}
+      <div style={{
+        position: 'sticky', top: 45, zIndex: 9,
+        background: 'var(--bg)', borderBottom: '1px solid var(--border)',
+        display: 'flex', overflowX: 'auto',
+        scrollbarWidth: 'none',
+      }}>
+        {TABS.map(t => (
+          <button
+            key={t.id}
+            onClick={() => setActiveTab(t.id)}
+            style={{
+              flex: '0 0 auto', padding: '8px 12px', fontSize: 11,
+              background: 'none', border: 'none', cursor: 'pointer',
+              fontFamily: 'inherit',
+              color: activeTab === t.id ? 'var(--green)' : 'var(--text3)',
+              borderBottom: activeTab === t.id ? '2px solid var(--green)' : '2px solid transparent',
+              whiteSpace: 'nowrap',
+            }}>
+            <span style={{ marginRight: 3 }}>{t.icon}</span>
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Content */}
+      <div style={{ flex: 1, padding: '14px 16px', overflowY: 'auto' }}>
+        {activeTab === 'train'  && <TrainTab />}
+        {activeTab === 'modes'  && <ModesTab />}
+        {activeTab === 'scales' && <ScalesTab />}
+        {activeTab === 'chords' && <ChordsTab />}
+        {activeTab === 'circle' && <CircleTab />}
+        {activeTab === 'quiz'   && <QuizTab />}
+        {activeTab === 'ai'     && <AskAITab />}
+      </div>
+    </div>
+  );
+}
