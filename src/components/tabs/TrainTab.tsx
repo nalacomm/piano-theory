@@ -1,5 +1,5 @@
 'use client';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { NOTES, buildScale, buildChord, SCALE_FORMULAS, CHORD_TYPES, MODE_DATA } from '@/lib/theory';
 import { playScaleUp, playChordTogether } from '@/lib/audio';
 import PianoKeys from '@/components/ui/PianoKeys';
@@ -459,24 +459,35 @@ const LESSONS: Lesson[] = [
 
 const CATEGORIES = ['Fundamentals', 'Modes', 'Scales', 'Chords'] as const;
 
-function getLessonsCompleted(): Set<string> {
+async function fetchProgress(): Promise<string[]> {
   try {
-    const raw = localStorage.getItem('train_completed');
-    return new Set(raw ? JSON.parse(raw) : []);
-  } catch { return new Set(); }
+    const r = await fetch('/api/progress');
+    if (!r.ok) return [];
+    const data = await r.json();
+    return data.lesson_completions ?? [];
+  } catch { return []; }
 }
 
-function markCompleted(id: string) {
+async function saveProgress(ids: string[]): Promise<void> {
   try {
-    const set = getLessonsCompleted();
-    set.add(id);
-    localStorage.setItem('train_completed', JSON.stringify([...set]));
-  } catch { /* ignore */ }
+    await fetch('/api/progress', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lesson_completions: ids }),
+    });
+  } catch { /* silent — state is already updated in memory */ }
 }
 
 // ── Lesson viewer ──
 
-function LessonView({ lesson, root, onBack }: { lesson: Lesson; root: string; onBack: () => void }) {
+function LessonView({
+  lesson, root, onBack, onComplete,
+}: {
+  lesson: Lesson;
+  root: string;
+  onBack: () => void;
+  onComplete: (id: string) => void;
+}) {
   const noteIdxs = lesson.noteBuilder(root);
   const rootIdx = NOTES.indexOf(root as typeof NOTES[number]);
   const noteNames = noteIdxs.map(i => NOTES[i % 12]);
@@ -488,8 +499,8 @@ function LessonView({ lesson, root, onBack }: { lesson: Lesson; root: string; on
     if (checkAnswered) return;
     setCheckPicked(choice);
     setCheckAnswered(true);
-    if (choice === lesson.checkQ.answer) markCompleted(lesson.id);
-  }, [checkAnswered, lesson]);
+    if (choice === lesson.checkQ.answer) onComplete(lesson.id);
+  }, [checkAnswered, lesson, onComplete]);
 
   const card: React.CSSProperties = {
     background: 'var(--surface)', border: '1px solid var(--border)',
@@ -616,13 +627,27 @@ function LessonView({ lesson, root, onBack }: { lesson: Lesson; root: string; on
 export default function TrainTab() {
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
   const [root, setRoot] = useState('C');
-  const [completed, setCompleted] = useState<Set<string>>(() => {
-    try { return getLessonsCompleted(); } catch { return new Set(); }
-  });
+  const [completed, setCompleted] = useState<Set<string>>(new Set());
+  const [progressLoaded, setProgressLoaded] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>('Fundamentals');
 
+  useEffect(() => {
+    fetchProgress().then(ids => {
+      setCompleted(new Set(ids));
+      setProgressLoaded(true);
+    });
+  }, []);
+
+  const handleComplete = useCallback(async (id: string) => {
+    setCompleted(prev => {
+      const next = new Set(prev);
+      next.add(id);
+      saveProgress([...next]);
+      return next;
+    });
+  }, []);
+
   const handleBack = useCallback(() => {
-    setCompleted(getLessonsCompleted());
     setActiveLesson(null);
   }, []);
 
@@ -632,11 +657,11 @@ export default function TrainTab() {
   };
 
   if (activeLesson) {
-    return <LessonView lesson={activeLesson} root={root} onBack={handleBack} />;
+    return <LessonView lesson={activeLesson} root={root} onBack={handleBack} onComplete={handleComplete} />;
   }
 
   const totalLessons = LESSONS.length;
-  const doneCount = LESSONS.filter(l => completed.has(l.id)).length;
+  const doneCount = progressLoaded ? LESSONS.filter(l => completed.has(l.id)).length : 0;
 
   return (
     <div style={{ padding: '0 0 80px' }}>

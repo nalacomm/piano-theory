@@ -1,6 +1,8 @@
 'use client';
 import { useState } from 'react';
+import { useSession, signOut } from 'next-auth/react';
 import { useAudio } from '@/hooks/useAudio';
+import AuthGate from './AuthGate';
 import TrainTab from './tabs/TrainTab';
 import ModesTab from './tabs/ModesTab';
 import ScalesTab from './tabs/ScalesTab';
@@ -21,7 +23,70 @@ const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'ai',     label: 'Ask AI',  icon: '✦' },
 ];
 
-export default function PianoTheoryApp() {
+function UserChip() {
+  const { data: session } = useSession();
+  const [open, setOpen] = useState(false);
+
+  if (!session?.user) return null;
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{
+          display: 'flex', alignItems: 'center', gap: 6,
+          background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+        }}
+      >
+        {session.user.image ? (
+          <img
+            src={session.user.image}
+            alt={session.user.name ?? 'User'}
+            width={28} height={28}
+            style={{ borderRadius: '50%', border: '1px solid var(--border)' }}
+          />
+        ) : (
+          <div style={{
+            width: 28, height: 28, borderRadius: '50%',
+            background: 'var(--surface2)', border: '1px solid var(--border)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 12, color: 'var(--text2)', fontFamily: 'inherit',
+          }}>
+            {(session.user.name ?? session.user.email ?? '?')[0].toUpperCase()}
+          </div>
+        )}
+      </button>
+
+      {open && (
+        <div style={{
+          position: 'absolute', right: 0, top: 36, zIndex: 20,
+          background: 'var(--surface)', border: '1px solid var(--border)',
+          borderRadius: 8, padding: 12, minWidth: 180,
+          boxShadow: '0 4px 16px rgba(0,0,0,0.4)',
+        }}>
+          <div style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 4, fontWeight: 600 }}>
+            {session.user.name}
+          </div>
+          <div style={{ fontSize: 11, color: 'var(--text3)', marginBottom: 12 }}>
+            {session.user.email}
+          </div>
+          <button
+            onClick={() => { setOpen(false); signOut(); }}
+            style={{
+              width: '100%', padding: '7px 10px', borderRadius: 6, fontSize: 12,
+              background: 'var(--surface2)', border: '1px solid var(--border)',
+              color: 'var(--text2)', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left',
+            }}
+          >
+            Sign out
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function App() {
   const [activeTab, setActiveTab] = useState<Tab>('train');
   const { audioUnlocked, unlock } = useAudio();
 
@@ -41,20 +106,21 @@ export default function PianoTheoryApp() {
         <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--green)', letterSpacing: 1 }}>
           Piano Theory
         </div>
-        {!audioUnlocked && (
-          <button
-            onClick={unlock}
-            style={{
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {!audioUnlocked && (
+            <button onClick={unlock} style={{
               fontSize: 11, padding: '4px 10px', borderRadius: 6,
               background: 'var(--surface2)', border: '1px solid var(--border)',
               color: 'var(--text3)', cursor: 'pointer', fontFamily: 'inherit',
             }}>
-            Enable Audio
-          </button>
-        )}
-        {audioUnlocked && (
-          <span style={{ fontSize: 10, color: 'var(--green)' }}>♪ Audio On</span>
-        )}
+              Enable Audio
+            </button>
+          )}
+          {audioUnlocked && (
+            <span style={{ fontSize: 10, color: 'var(--green)' }}>♪ Audio On</span>
+          )}
+          <UserChip />
+        </div>
       </div>
 
       {/* Tab bar */}
@@ -93,5 +159,13 @@ export default function PianoTheoryApp() {
         {activeTab === 'ai'     && <AskAITab />}
       </div>
     </div>
+  );
+}
+
+export default function PianoTheoryApp() {
+  return (
+    <AuthGate>
+      <App />
+    </AuthGate>
   );
 }
