@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useAudio } from '@/hooks/useAudio';
 import AuthGate from './AuthGate';
+import AdminTab from './tabs/AdminTab';
 import TrainTab from './tabs/TrainTab';
 import ModesTab from './tabs/ModesTab';
 import ScalesTab from './tabs/ScalesTab';
@@ -11,9 +12,11 @@ import CircleTab from './tabs/CircleTab';
 import QuizTab from './tabs/QuizTab';
 import AskAITab from './tabs/AskAITab';
 
-type Tab = 'train' | 'modes' | 'scales' | 'chords' | 'circle' | 'quiz' | 'ai';
+const ADMIN_EMAIL = 'eddieriley.tmo@gmail.com';
 
-const TABS: { id: Tab; label: string; icon: string }[] = [
+type Tab = 'train' | 'modes' | 'scales' | 'chords' | 'circle' | 'quiz' | 'ai' | 'admin';
+
+const BASE_TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'train',  label: 'Train',   icon: '⚡' },
   { id: 'modes',  label: 'Modes',   icon: 'M' },
   { id: 'scales', label: 'Scales',  icon: 'S' },
@@ -89,6 +92,9 @@ function UserChip() {
 function App() {
   const [activeTab, setActiveTab] = useState<Tab>('train');
   const { audioUnlocked, unlock } = useAudio();
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.email === ADMIN_EMAIL;
+  const TABS = isAdmin ? [...BASE_TABS, { id: 'admin' as Tab, label: 'Admin', icon: '★' }] : BASE_TABS;
 
   return (
     <div style={{
@@ -157,6 +163,7 @@ function App() {
         {activeTab === 'circle' && <CircleTab />}
         {activeTab === 'quiz'   && <QuizTab />}
         {activeTab === 'ai'     && <AskAITab />}
+        {activeTab === 'admin'  && <AdminTab />}
       </div>
     </div>
   );
