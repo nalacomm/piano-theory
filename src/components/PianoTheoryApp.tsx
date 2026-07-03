@@ -141,7 +141,7 @@ function App() {
             key={t.id}
             onClick={() => setActiveTab(t.id)}
             style={{
-              flex: '0 0 auto', padding: '8px 12px', fontSize: 11,
+              flex: '0 0 auto', padding: '8px 9px', fontSize: 11,
               background: 'none', border: 'none', cursor: 'pointer',
               fontFamily: 'inherit',
               color: activeTab === t.id ? 'var(--green)' : 'var(--text3)',
