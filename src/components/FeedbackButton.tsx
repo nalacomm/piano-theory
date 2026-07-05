@@ -13,15 +13,11 @@ export default function FeedbackButton() {
     const alreadySubmitted = localStorage.getItem('piano_feedback_given') === 'true';
     if (alreadySubmitted) return;
 
-    // Only count once per browser session (avoids double-counting on hot reload / tab focus)
-    if (!sessionStorage.getItem('piano_visit_counted')) {
-      sessionStorage.setItem('piano_visit_counted', 'true');
-      const prev = parseInt(localStorage.getItem('piano_visit_count') ?? '0', 10);
-      const next = prev + 1;
-      localStorage.setItem('piano_visit_count', String(next));
-      if (next % 5 === 0) {
-        setTimeout(() => setOpen(true), 1500);
-      }
+    const prev = parseInt(localStorage.getItem('piano_visit_count') ?? '0', 10);
+    const next = prev + 1;
+    localStorage.setItem('piano_visit_count', String(next));
+    if (next % 5 === 0) {
+      setTimeout(() => setOpen(true), 1500);
     }
   }, []);
 
