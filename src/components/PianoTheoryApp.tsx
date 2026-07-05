@@ -4,6 +4,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { useAudio } from '@/hooks/useAudio';
 import AuthGate from './AuthGate';
 import AdminTab from './tabs/AdminTab';
+import FeedbackButton from './FeedbackButton';
 import TrainTab from './tabs/TrainTab';
 import ModesTab from './tabs/ModesTab';
 import ScalesTab from './tabs/ScalesTab';
@@ -165,6 +166,7 @@ function App() {
         {activeTab === 'ai'     && <AskAITab />}
         {activeTab === 'admin'  && <AdminTab />}
       </div>
+      <FeedbackButton />
     </div>
   );
 }

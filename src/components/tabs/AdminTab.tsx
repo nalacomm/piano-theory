@@ -7,18 +7,32 @@ interface UserRow {
   updated_at: string;
 }
 
+interface FeedbackRow {
+  id: number;
+  user_email: string;
+  rating: number;
+  suggestion: string | null;
+  created_at: string;
+}
+
 const TOTAL_LESSONS = 17;
 
 export default function AdminTab() {
   const [users, setUsers] = useState<UserRow[]>([]);
+  const [feedback, setFeedback] = useState<FeedbackRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState<'users' | 'feedback'>('users');
 
   useEffect(() => {
-    fetch('/api/admin/users')
-      .then(r => r.json())
-      .then(data => { setUsers(data.users ?? []); setLoading(false); })
-      .catch(() => setLoading(false));
+    Promise.all([
+      fetch('/api/admin/users').then(r => r.json()),
+      fetch('/api/admin/feedback').then(r => r.json()),
+    ]).then(([userData, feedbackData]) => {
+      setUsers(userData.users ?? []);
+      setFeedback(feedbackData.feedback ?? []);
+      setLoading(false);
+    }).catch(() => setLoading(false));
   }, []);
 
   const card: React.CSSProperties = {
@@ -26,25 +40,86 @@ export default function AdminTab() {
     borderRadius: 'var(--radius)', padding: '14px 16px', marginBottom: 10,
   };
 
+  const avgRating = feedback.length
+    ? (feedback.reduce((s, f) => s + f.rating, 0) / feedback.length).toFixed(1)
+    : null;
+
   if (loading) {
     return <div style={{ padding: '20px 0', fontSize: 13, color: 'var(--text3)' }}>Loading...</div>;
   }
 
   return (
     <div style={{ padding: '0 0 80px' }}>
-      <div style={{ ...card, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)' }}>Registered Users</div>
-          <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 2 }}>Admin view only</div>
+      {/* Summary row */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+        <div style={{ ...card, flex: 1, marginBottom: 0, textAlign: 'center' }}>
+          <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--green)' }}>{users.length}</div>
+          <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>Users</div>
         </div>
-        <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--green)' }}>{users.length}</div>
+        <div style={{ ...card, flex: 1, marginBottom: 0, textAlign: 'center' }}>
+          <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--amber)' }}>{feedback.length}</div>
+          <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>Ratings</div>
+        </div>
+        <div style={{ ...card, flex: 1, marginBottom: 0, textAlign: 'center' }}>
+          <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--amber)' }}>
+            {avgRating ?? '—'}
+          </div>
+          <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>Avg ★</div>
+        </div>
       </div>
 
-      {users.length === 0 && (
+      {/* Section toggle */}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
+        {(['users', 'feedback'] as const).map(s => (
+          <button key={s} onClick={() => setActiveSection(s)} style={{
+            padding: '5px 14px', borderRadius: 16, fontSize: 12,
+            cursor: 'pointer', fontFamily: 'inherit',
+            background: activeSection === s ? 'var(--blue)' : 'var(--surface)',
+            color: activeSection === s ? '#0a0f1e' : 'var(--text2)',
+            border: `1px solid ${activeSection === s ? 'var(--blue)' : 'var(--border)'}`,
+          }}>
+            {s === 'users' ? `Users (${users.length})` : `Feedback (${feedback.length})`}
+          </button>
+        ))}
+      </div>
+
+      {activeSection === 'users' && users.length === 0 && (
         <div style={{ ...card, color: 'var(--text3)', fontSize: 13 }}>No users yet.</div>
       )}
 
-      {users.map(u => {
+      {activeSection === 'feedback' && (
+        <>
+          {feedback.length === 0 && (
+            <div style={{ ...card, color: 'var(--text3)', fontSize: 13 }}>No feedback yet.</div>
+          )}
+          {feedback.map(f => (
+            <div key={f.id} style={card}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: f.suggestion ? 8 : 0 }}>
+                <div>
+                  <div style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 3 }}>{f.user_email}</div>
+                  <div style={{ fontSize: 11, color: 'var(--text3)' }}>
+                    {new Date(f.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </div>
+                </div>
+                <div style={{ fontSize: 16, letterSpacing: 1, color: 'var(--amber)' }}>
+                  {'★'.repeat(f.rating)}{'☆'.repeat(5 - f.rating)}
+                </div>
+              </div>
+              {f.suggestion && (
+                <div style={{
+                  fontSize: 13, color: 'var(--text)', lineHeight: 1.5,
+                  padding: '8px 10px', borderRadius: 6,
+                  background: 'var(--surface2)', borderLeft: '3px solid var(--blue)',
+                }}>
+                  {f.suggestion}
+                </div>
+              )}
+            </div>
+          ))}
+        </>
+      )}
+
+      {activeSection === 'users' && users.map(u => {
         const count = u.lesson_completions?.length ?? 0;
         const pct = Math.round((count / TOTAL_LESSONS) * 100);
         const isOpen = expanded === u.user_email;
@@ -109,3 +184,4 @@ export default function AdminTab() {
     </div>
   );
 }
+
