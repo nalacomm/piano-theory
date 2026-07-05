@@ -10,7 +10,7 @@ interface UserRow {
 interface FeedbackRow {
   id: number;
   user_email: string;
-  rating: number;
+  rating: number | null;
   suggestion: string | null;
   created_at: string;
 }
@@ -40,8 +40,9 @@ export default function AdminTab() {
     borderRadius: 'var(--radius)', padding: '14px 16px', marginBottom: 10,
   };
 
-  const avgRating = feedback.length
-    ? (feedback.reduce((s, f) => s + f.rating, 0) / feedback.length).toFixed(1)
+  const ratedRows = feedback.filter(f => f.rating !== null);
+  const avgRating = ratedRows.length
+    ? (ratedRows.reduce((s, f) => s + (f.rating ?? 0), 0) / ratedRows.length).toFixed(1)
     : null;
 
   if (loading) {
@@ -102,7 +103,10 @@ export default function AdminTab() {
                   </div>
                 </div>
                 <div style={{ fontSize: 16, letterSpacing: 1, color: 'var(--amber)' }}>
-                  {'★'.repeat(f.rating)}{'☆'.repeat(5 - f.rating)}
+                  {f.rating
+                    ? <>{'★'.repeat(f.rating)}{'☆'.repeat(5 - f.rating)}</>
+                    : <span style={{ fontSize: 11, color: 'var(--text3)', letterSpacing: 0 }}>comment</span>
+                  }
                 </div>
               </div>
               {f.suggestion && (
