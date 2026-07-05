@@ -1,5 +1,5 @@
 'use client';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 export default function FeedbackButton() {
   const [open, setOpen] = useState(false);
@@ -8,6 +8,22 @@ export default function FeedbackButton() {
   const [suggestion, setSuggestion] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    const alreadySubmitted = localStorage.getItem('piano_feedback_given') === 'true';
+    if (alreadySubmitted) return;
+
+    // Only count once per browser session (avoids double-counting on hot reload / tab focus)
+    if (!sessionStorage.getItem('piano_visit_counted')) {
+      sessionStorage.setItem('piano_visit_counted', 'true');
+      const prev = parseInt(localStorage.getItem('piano_visit_count') ?? '0', 10);
+      const next = prev + 1;
+      localStorage.setItem('piano_visit_count', String(next));
+      if (next % 5 === 0) {
+        setTimeout(() => setOpen(true), 1500);
+      }
+    }
+  }, []);
 
   const handleSubmit = useCallback(async () => {
     if (!rating || saving) return;
@@ -18,6 +34,7 @@ export default function FeedbackButton() {
       body: JSON.stringify({ rating, suggestion }),
     });
     setSaving(false);
+    localStorage.setItem('piano_feedback_given', 'true');
     setSubmitted(true);
   }, [rating, suggestion, saving]);
 
