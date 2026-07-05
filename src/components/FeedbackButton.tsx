@@ -126,8 +126,8 @@ export default function FeedbackButton() {
                   style={{
                     fontSize: 28, background: 'none', border: 'none',
                     cursor: 'pointer', padding: 0,
-                    opacity: n <= (hovered || rating) ? 1 : 0.25,
-                    transition: 'opacity 0.1s',
+                    color: n <= (hovered || rating) ? 'var(--amber)' : 'var(--text3)',
+                    transition: 'color 0.1s',
                   }}
                 >
                   ★
