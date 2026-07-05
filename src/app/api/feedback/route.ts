@@ -10,13 +10,13 @@ export async function POST(req: Request) {
   }
 
   const { rating, suggestion } = await req.json();
-  if (!rating || rating < 1 || rating > 5) {
+  if (rating !== null && rating !== undefined && (rating < 1 || rating > 5)) {
     return NextResponse.json({ error: 'Invalid rating' }, { status: 400 });
   }
 
   await sql`
     INSERT INTO user_feedback (user_email, rating, suggestion)
-    VALUES (${session.user.email}, ${rating}, ${suggestion ?? null})
+    VALUES (${session.user.email}, ${rating ?? null}, ${suggestion ?? null})
   `;
   return NextResponse.json({ ok: true });
 }

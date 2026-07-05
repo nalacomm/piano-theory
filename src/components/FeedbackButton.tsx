@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect } from 'react';
 
 export default function FeedbackButton() {
   const [open, setOpen] = useState(false);
+  const [hasRated, setHasRated] = useState(false);
   const [rating, setRating] = useState(0);
   const [hovered, setHovered] = useState(0);
   const [suggestion, setSuggestion] = useState('');
@@ -11,7 +12,10 @@ export default function FeedbackButton() {
 
   useEffect(() => {
     const alreadySubmitted = localStorage.getItem('piano_feedback_given') === 'true';
-    if (alreadySubmitted) return;
+    if (alreadySubmitted) {
+      setHasRated(true);
+      return;
+    }
 
     const prev = parseInt(localStorage.getItem('piano_visit_count') ?? '0', 10);
     const next = prev + 1;
@@ -22,26 +26,32 @@ export default function FeedbackButton() {
   }, []);
 
   const handleSubmit = useCallback(async () => {
-    if (!rating || saving) return;
+    if (saving) return;
+    if (!hasRated && !rating) return;
+    if (!hasRated && !suggestion.trim() && !rating) return;
     setSaving(true);
     await fetch('/api/feedback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ rating, suggestion }),
+      body: JSON.stringify({ rating: rating || null, suggestion }),
     });
     setSaving(false);
-    localStorage.setItem('piano_feedback_given', 'true');
+    if (!hasRated) {
+      localStorage.setItem('piano_feedback_given', 'true');
+      setHasRated(true);
+    }
     setSubmitted(true);
-  }, [rating, suggestion, saving]);
+  }, [rating, suggestion, saving, hasRated]);
 
   const handleClose = () => {
     setOpen(false);
     setTimeout(() => {
-      setRating(0);
       setSuggestion('');
       setSubmitted(false);
     }, 300);
   };
+
+  const canSubmit = hasRated ? suggestion.trim().length > 0 : rating > 0;
 
   return (
     <>
@@ -93,7 +103,7 @@ export default function FeedbackButton() {
           <div style={{ textAlign: 'center', padding: '20px 0' }}>
             <div style={{ fontSize: 28, marginBottom: 10 }}>🙏</div>
             <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--green)', marginBottom: 6 }}>
-              Thanks for the feedback!
+              {hasRated ? 'Comment sent!' : 'Thanks for the feedback!'}
             </div>
             <div style={{ fontSize: 13, color: 'var(--text3)', marginBottom: 20 }}>
               It helps make the app better for everyone.
@@ -109,37 +119,38 @@ export default function FeedbackButton() {
         ) : (
           <>
             <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>
-              How is the app?
+              {hasRated ? 'Leave a comment' : 'How is the app?'}
             </div>
             <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 16 }}>
-              Your feedback shapes what gets built next.
+              {hasRated ? 'Suggestions are always welcome.' : 'Your feedback shapes what gets built next.'}
             </div>
 
-            {/* Stars */}
-            <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-              {[1,2,3,4,5].map(n => (
-                <button
-                  key={n}
-                  onClick={() => setRating(n)}
-                  onMouseEnter={() => setHovered(n)}
-                  onMouseLeave={() => setHovered(0)}
-                  style={{
-                    fontSize: 28, background: 'none', border: 'none',
-                    cursor: 'pointer', padding: 0,
-                    color: n <= (hovered || rating) ? 'var(--amber)' : 'var(--text3)',
-                    transition: 'color 0.1s',
-                  }}
-                >
-                  ★
-                </button>
-              ))}
-            </div>
+            {/* Stars — only shown before first rating */}
+            {!hasRated && (
+              <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+                {[1,2,3,4,5].map(n => (
+                  <button
+                    key={n}
+                    onClick={() => setRating(n)}
+                    onMouseEnter={() => setHovered(n)}
+                    onMouseLeave={() => setHovered(0)}
+                    style={{
+                      fontSize: 28, background: 'none', border: 'none',
+                      cursor: 'pointer', padding: 0,
+                      color: n <= (hovered || rating) ? 'var(--amber)' : 'var(--text3)',
+                      transition: 'color 0.1s',
+                    }}
+                  >
+                    ★
+                  </button>
+                ))}
+              </div>
+            )}
 
-            {/* Suggestion */}
             <textarea
               value={suggestion}
               onChange={e => setSuggestion(e.target.value)}
-              placeholder="What would make this better? (optional)"
+              placeholder={hasRated ? 'What would you like to see?' : 'What would make this better? (optional)'}
               rows={3}
               style={{
                 width: '100%', padding: '10px 12px', borderRadius: 8, fontSize: 13,
@@ -159,16 +170,16 @@ export default function FeedbackButton() {
               </button>
               <button
                 onClick={handleSubmit}
-                disabled={!rating || saving}
+                disabled={!canSubmit || saving}
                 style={{
                   flex: 2, padding: '10px', borderRadius: 8, fontSize: 13, fontWeight: 700,
-                  background: rating ? 'var(--green)' : 'var(--surface2)',
-                  color: rating ? '#0a0f1e' : 'var(--text3)',
-                  border: 'none', cursor: rating ? 'pointer' : 'default',
+                  background: canSubmit ? 'var(--green)' : 'var(--surface2)',
+                  color: canSubmit ? '#0a0f1e' : 'var(--text3)',
+                  border: 'none', cursor: canSubmit ? 'pointer' : 'default',
                   fontFamily: 'inherit', transition: 'all 0.15s',
                 }}
               >
-                {saving ? 'Sending...' : 'Send Feedback'}
+                {saving ? 'Sending...' : hasRated ? 'Send Comment' : 'Send Feedback'}
               </button>
             </div>
           </>
