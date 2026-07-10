@@ -55,21 +55,19 @@ export default function FeedbackButton() {
 
   return (
     <>
-      {/* Floating button */}
+      {/* Trigger — rendered inline wherever this component is placed */}
       <button
         onClick={() => setOpen(true)}
         style={{
-          position: 'fixed', bottom: 24, right: 16, zIndex: 50,
-          display: 'flex', alignItems: 'center', gap: 6,
-          padding: '8px 14px', borderRadius: 20,
-          background: 'var(--surface2)', border: '1px solid var(--border)',
-          color: 'var(--text2)', fontSize: 13, fontWeight: 600,
+          display: 'flex', alignItems: 'center', gap: 4,
+          padding: '3px 8px', borderRadius: 12,
+          background: 'none', border: '1px solid var(--border)',
+          color: 'var(--text3)', fontSize: 11, fontWeight: 600,
           cursor: 'pointer', fontFamily: "'Courier New', Courier, monospace",
-          boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
         }}
       >
-        <span style={{ fontSize: 14, color: 'var(--amber)' }}>★</span>
-        Rate the app
+        <span style={{ color: 'var(--amber)' }}>★</span>
+        Rate
       </button>
 
       {/* Backdrop */}

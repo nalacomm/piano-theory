@@ -160,6 +160,7 @@ function App() {
             <span style={{ fontSize: 10, color: 'var(--green)' }}>♪ Audio On</span>
           )}
           <ThemeToggle />
+          <FeedbackButton />
           <UserChip />
         </div>
       </div>
@@ -200,7 +201,6 @@ function App() {
         {activeTab === 'ai'     && <AskAITab />}
         {activeTab === 'admin'  && <AdminTab />}
       </div>
-      <FeedbackButton />
     </div>
   );
 }
