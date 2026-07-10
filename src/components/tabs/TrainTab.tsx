@@ -6,6 +6,7 @@ import PianoKeys from '@/components/ui/PianoKeys';
 import SheetMusic from '@/components/ui/SheetMusic';
 import InversionLessonView from '@/components/tabs/InversionLessonView';
 import ProgressionLessonView from '@/components/tabs/ProgressionLessonView';
+import RhythmLessonView from '@/components/tabs/RhythmLessonView';
 
 // ── Lesson data ──
 
@@ -24,6 +25,7 @@ interface Lesson {
   color: string;
   inversionType?: 'triads' | 'sevenths';
   progressionLesson?: boolean;
+  rhythmLesson?: boolean;
   intro?: string;
   keyFacts?: string[];
   identTip?: string;
@@ -460,6 +462,14 @@ const LESSONS: Lesson[] = [
     },
   },
   {
+    id: 'fund-rhythm',
+    category: 'Fundamentals',
+    title: 'Rhythm Basics',
+    subtitle: 'Note values, time signatures, dynamics, tempo',
+    color: '#fb923c',
+    rhythmLesson: true,
+  },
+  {
     id: 'chord-progressions',
     category: 'Chords',
     title: 'Progressions & Cadences',
@@ -702,6 +712,17 @@ export default function TrainTab() {
     if (activeLesson.progressionLesson) {
       return (
         <ProgressionLessonView
+          root={root}
+          lessonId={activeLesson.id}
+          color={activeLesson.color}
+          onBack={handleBack}
+          onComplete={handleComplete}
+        />
+      );
+    }
+    if (activeLesson.rhythmLesson) {
+      return (
+        <RhythmLessonView
           root={root}
           lessonId={activeLesson.id}
           color={activeLesson.color}
