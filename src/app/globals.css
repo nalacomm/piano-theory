@@ -10,9 +10,9 @@ body { font-family: 'Courier New', Courier, monospace; background: var(--bg); co
   --surface: #111827;
   --surface2: #1e293b;
   --border: #1e293b;
-  --text: #f1f5f9;
-  --text2: #b8c8d8;
-  --text3: #8fa3b8;
+  --text: #ffffff;
+  --text2: #dde8f2;
+  --text3: #a8bfd0;
   --green: #22c55e;
   --blue: #3b82f6;
   --purple: #8b5cf6;
@@ -29,9 +29,9 @@ body { font-family: 'Courier New', Courier, monospace; background: var(--bg); co
   --surface: #ffffff;
   --surface2: #f1f5f9;
   --border: #e2e8f0;
-  --text: #1e293b;
-  --text2: #475569;
-  --text3: #64748b;
+  --text: #0a0f1e;
+  --text2: #1e293b;
+  --text3: #334155;
   --green: #16a34a;
   --blue: #2563eb;
   --purple: #7c3aed;
