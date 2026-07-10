@@ -30,6 +30,7 @@ interface KeyboardQuestion {
   correctNotes: string[];
   allNotes?: string[];
   label?: string;
+  explanation?: string;
   referenceIdxs?: number[];
   referenceRoot?: number;
 }
@@ -219,9 +220,27 @@ const MC_EXPLANATIONS: Record<string, string> = {
   "In number system 1-4-5, the 4 means?": "The number system counts scale degrees. In C major: 1=C, 2=D, 3=E, 4=F, 5=G. 'The 4' means the chord built on the 4th scale degree — in C, that's an F major chord.",
 };
 
+// ── Scale descriptions for keyboard question explanations ─────────────────────
+
+const SCALE_DESCRIPTIONS: Record<string, string> = {
+  major:         'W-W-H-W-W-W-H. The reference — all other scales are measured against it. Bright and resolved.',
+  naturalMinor:  'W-H-W-W-H-W-W. Three flats vs major: ♭3, ♭6, ♭7. The most common minor sound in Western music.',
+  harmonicMinor: 'Natural minor with a raised 7th (♯7). Creates a strong leading tone and an exotic augmented 2nd gap between ♭6 and 7.',
+  melodicMinor:  'Natural minor with raised 6th and 7th going up. Smooth voice-leading. Classical and jazz use this ascending form.',
+  majorPenta:    '5 notes (1-2-3-5-6). Major without the 4th and 7th removes all half-step tension. Works over any major chord.',
+  minorPenta:    '5 notes (1-♭3-4-5-♭7). Minor without the 2nd and 6th. The foundation of blues, rock, and R&B soloing.',
+  blues:         'Minor pentatonic + ♭5 (the blue note). That flat 5 is the bent, raw sound that defines the blues genre.',
+  wholeTone:     '6 notes, each a whole step apart. No half steps, no leading tone — everything floats with no resolution possible.',
+  diminished:    'Alternates W-H-W-H-W-H-W-H (8 notes total). Fully symmetrical — the pattern repeats every 3 semitones. High tension.',
+};
+
 // ── Keyboard question generator ────────────────────────────────────────────────
 
 const MODE_KEYS: ModeKey[] = ['dorian', 'phrygian', 'lydian', 'mixolydian', 'aeolian'];
+
+const MODE_PARENT_OFFSETS: Record<string, number> = {
+  dorian: 2, phrygian: 4, lydian: 5, mixolydian: 7, aeolian: 9,
+};
 
 function generateKeyboardQuestions(): KeyboardQuestion[] {
   const qs: KeyboardQuestion[] = [];
@@ -233,6 +252,7 @@ function generateKeyboardQuestions(): KeyboardQuestion[] {
     const formula = SCALE_FORMULAS[sk];
     const idxs = buildScale(root, formula.intervals);
     const notes = idxs.map(i => NOTES[i]);
+    const desc = SCALE_DESCRIPTIONS[sk] ?? `${notes.length} notes built from root by steps: ${formula.intervals.join('-')} semitones.`;
     qs.push({
       kind: 'keyboard', subtype: 'scale', topic: 'scales',
       prompt: `Tap all notes of ${root} ${formula.label}`,
@@ -242,6 +262,7 @@ function generateKeyboardQuestions(): KeyboardQuestion[] {
       referenceIdxs: idxs,
       referenceRoot: idxs[0],
       label: `${root} ${formula.label}: ${notes.join(' · ')}`,
+      explanation: `${root} ${formula.label} — ${desc}`,
     });
   }
 
@@ -264,6 +285,7 @@ function generateKeyboardQuestions(): KeyboardQuestion[] {
       referenceIdxs: idxs.map(i => i % 12),
       referenceRoot: idxs[0] % 12,
       label: `${root}${chord.symbol}: ${notes.join(' · ')}`,
+      explanation: chord.theory,
     });
   }
 
@@ -273,6 +295,9 @@ function generateKeyboardQuestions(): KeyboardQuestion[] {
     const mode = MODE_DATA[mk];
     const idxs = buildScale(root, mode.intervals);
     const notes = idxs.map(i => NOTES[i]);
+    const rootIdx = NOTES.indexOf(root as typeof NOTES[number]);
+    const parentOffset = MODE_PARENT_OFFSETS[mk] ?? 0;
+    const parentRoot = NOTES[(rootIdx - parentOffset + 12) % 12];
     qs.push({
       kind: 'keyboard', subtype: 'scale', topic: 'modes',
       prompt: `Tap all notes of ${root} ${mode.label}`,
@@ -282,17 +307,18 @@ function generateKeyboardQuestions(): KeyboardQuestion[] {
       referenceIdxs: idxs,
       referenceRoot: idxs[0],
       label: `${root} ${mode.short}: ${notes.join(' · ')}`,
+      explanation: `${root} ${mode.label} uses the same notes as ${parentRoot} major (its parent key). ${mode.keyFact}`,
     });
   }
 
   // Intervals
   const intervals: Array<{ semitones: number; name: string }> = [
-    { semitones: 2, name: 'major 2nd' },
-    { semitones: 3, name: 'minor 3rd' },
-    { semitones: 4, name: 'major 3rd' },
-    { semitones: 5, name: 'perfect 4th' },
-    { semitones: 7, name: 'perfect 5th' },
-    { semitones: 9, name: 'major 6th' },
+    { semitones: 2,  name: 'major 2nd' },
+    { semitones: 3,  name: 'minor 3rd' },
+    { semitones: 4,  name: 'major 3rd' },
+    { semitones: 5,  name: 'perfect 4th' },
+    { semitones: 7,  name: 'perfect 5th' },
+    { semitones: 9,  name: 'major 6th' },
     { semitones: 10, name: 'minor 7th (♭7)' },
     { semitones: 11, name: 'major 7th' },
   ];
@@ -310,6 +336,7 @@ function generateKeyboardQuestions(): KeyboardQuestion[] {
       referenceIdxs: [rootIdx],
       referenceRoot: rootIdx,
       label: `${root} + ${iv.semitones} semitones = ${targetNote}`,
+      explanation: `A ${iv.name} = ${iv.semitones} semitones. From ${root}, count ${iv.semitones} half steps up to reach ${targetNote}. On the piano, count every key (black and white) including the starting note.`,
     });
   }
 
@@ -400,6 +427,19 @@ function KeyboardQ({ q, onCorrect, onWrong }: {
       {(solved || failed) && q.label && (
         <div style={{ marginTop: 8, padding: '8px 10px', borderRadius: 6, fontSize: 12, background: 'var(--surface2)', color: 'var(--text2)' }}>
           {q.label}
+        </div>
+      )}
+      {(solved || failed) && q.explanation && (
+        <div style={{
+          marginTop: 8, padding: '10px 12px', borderRadius: 7, fontSize: 12, lineHeight: 1.6,
+          color: 'var(--text2)',
+          background: solved ? 'rgba(74,222,128,0.07)' : 'rgba(248,113,113,0.07)',
+          border: `1px solid ${solved ? 'var(--green)' : 'var(--red)'}`,
+        }}>
+          <span style={{ fontWeight: 700, color: solved ? 'var(--green)' : 'var(--red)', marginRight: 4 }}>
+            {solved ? 'Correct!' : 'Explanation:'}
+          </span>
+          {q.explanation}
         </div>
       )}
     </div>
