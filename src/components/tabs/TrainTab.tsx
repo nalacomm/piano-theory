@@ -589,7 +589,7 @@ function LessonView({
           <div style={{ fontSize: 14, fontWeight: 700, color: lesson.color }}>{root} {lesson.title}</div>
           <button onClick={() => lesson.playFn(noteNames)} style={{
             padding: '6px 12px', borderRadius: 6, fontSize: 12,
-            background: lesson.color, color: '#0a0f1e',
+            background: lesson.color, color: 'var(--on-accent)',
             border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700,
           }}>
             {lesson.playLabel}
@@ -607,7 +607,7 @@ function LessonView({
             <div key={i} style={{
               padding: '4px 8px', borderRadius: 4, fontSize: 12, fontWeight: 600,
               background: i === 0 ? lesson.color : 'var(--surface2)',
-              color: i === 0 ? '#0a0f1e' : 'var(--text)',
+              color: i === 0 ? 'var(--on-accent)' : 'var(--text)',
               border: `1px solid ${i === 0 ? lesson.color : 'var(--border)'}`,
             }}>
               {n}
@@ -780,7 +780,8 @@ export default function TrainTab() {
               padding: '4px 9px', borderRadius: 16, fontSize: 12,
               cursor: 'pointer', fontFamily: 'inherit',
               background: root === n ? 'var(--green)' : 'var(--surface2)',
-              color: root === n ? '#0a0f1e' : 'var(--text2)',
+              color: root === n ? 'var(--on-accent)' : 'var(--text2)',
+              fontWeight: root === n ? 700 : 400,
               border: `1px solid ${root === n ? 'var(--green)' : 'var(--border)'}`,
             }}>
               {n}
@@ -795,7 +796,8 @@ export default function TrainTab() {
             padding: '5px 12px', borderRadius: 16, fontSize: 12,
             cursor: 'pointer', fontFamily: 'inherit',
             background: activeCategory === cat ? 'var(--blue)' : 'var(--surface)',
-            color: activeCategory === cat ? '#0a0f1e' : 'var(--text2)',
+            color: activeCategory === cat ? 'var(--on-accent)' : 'var(--text2)',
+            fontWeight: activeCategory === cat ? 700 : 400,
             border: `1px solid ${activeCategory === cat ? 'var(--blue)' : 'var(--border)'}`,
           }}>
             {cat}

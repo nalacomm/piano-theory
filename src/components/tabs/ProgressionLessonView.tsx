@@ -298,7 +298,7 @@ export default function ProgressionLessonView({ root, lessonId, color, onBack, o
             padding: '5px 16px', borderRadius: 16, fontSize: 12,
             cursor: 'pointer', fontFamily: 'inherit',
             background: section === s ? color : 'var(--surface2)',
-            color: section === s ? '#0a0f1e' : 'var(--text2)',
+            color: section === s ? 'var(--on-accent)' : 'var(--text2)',
             border: `1px solid ${section === s ? color : 'var(--border)'}`,
             fontWeight: section === s ? 700 : 400,
           }}>
@@ -358,7 +358,7 @@ export default function ProgressionLessonView({ root, lessonId, color, onBack, o
             style={{
               padding: '6px 14px', borderRadius: 6, fontSize: 12, fontWeight: 700,
               background: isPlaying ? 'var(--red)' : entryColor,
-              color: '#0a0f1e', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+              color: 'var(--on-accent)', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
             }}
           >
             {isPlaying ? 'Stop' : 'Play All'}
@@ -374,7 +374,7 @@ export default function ProgressionLessonView({ root, lessonId, color, onBack, o
                 padding: '8px 12px', borderRadius: 8, fontSize: 13, textAlign: 'center',
                 cursor: 'pointer', fontFamily: 'inherit', minWidth: 52,
                 background: active ? entryColor : 'var(--surface2)',
-                color: active ? '#0a0f1e' : 'var(--text2)',
+                color: active ? 'var(--on-accent)' : 'var(--text2)',
                 border: `1px solid ${active ? entryColor : 'var(--border)'}`,
                 fontWeight: active ? 700 : 400,
               }}>
@@ -397,7 +397,7 @@ export default function ProgressionLessonView({ root, lessonId, color, onBack, o
             <div key={i} style={{
               padding: '4px 8px', borderRadius: 4, fontSize: 12, fontWeight: 600,
               background: i === 0 ? entryColor : 'var(--surface2)',
-              color: i === 0 ? '#0a0f1e' : 'var(--text)',
+              color: i === 0 ? 'var(--on-accent)' : 'var(--text)',
               border: `1px solid ${i === 0 ? entryColor : 'var(--border)'}`,
             }}>
               {NOTES[idx]}

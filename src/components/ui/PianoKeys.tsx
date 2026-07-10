@@ -48,7 +48,7 @@ export default function PianoKeys({ highlightedNotes, rootNote, label, onKeyClic
               paddingBottom: 3,
             }}
           >
-            <span style={{ fontSize: 9, color: highlightedNotes.includes(noteIdx) || noteIdx === rootNote ? '#0a0f1e' : '#94a3b8' }}>
+            <span style={{ fontSize: 9, color: highlightedNotes.includes(noteIdx) || noteIdx === rootNote ? 'var(--on-accent)' : '#94a3b8' }}>
               {NOTES[noteIdx]}
             </span>
           </div>

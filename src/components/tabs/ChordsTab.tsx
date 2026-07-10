@@ -33,7 +33,8 @@ export default function ChordsTab() {
   const chip = (active: boolean, c?: string): React.CSSProperties => ({
     padding: '5px 10px', borderRadius: 20, fontSize: 12, cursor: 'pointer', fontFamily: 'inherit',
     background: active ? (c || 'var(--green)') : 'var(--surface2)',
-    color: active ? '#0a0f1e' : 'var(--text2)',
+    color: active ? 'var(--on-accent)' : 'var(--text2)',
+    fontWeight: active ? 700 : 400,
     border: `1px solid ${active ? (c || 'var(--green)') : 'var(--border)'}`,
   });
 
@@ -86,7 +87,7 @@ export default function ChordsTab() {
             <div key={i} style={{
               padding: '4px 8px', borderRadius: 4, fontSize: 13, fontWeight: 600,
               background: i === 0 ? color : 'var(--surface2)',
-              color: i === 0 ? '#0a0f1e' : 'var(--text)',
+              color: i === 0 ? 'var(--on-accent)' : 'var(--text)',
               border: `1px solid ${i === 0 ? color : 'var(--border)'}`,
             }}>
               {n}

@@ -90,7 +90,7 @@ export default function CircleTab() {
             <span key={i} style={{
               padding: '3px 7px', borderRadius: 4, fontSize: 12,
               background: i === 0 ? 'var(--green)' : 'var(--surface2)',
-              color: i === 0 ? '#0a0f1e' : 'var(--text)',
+              color: i === 0 ? 'var(--on-accent)' : 'var(--text)',
             }}>{n}</span>
           ))}
         </div>

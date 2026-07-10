@@ -110,7 +110,7 @@ export default function FeedbackButton() {
             </div>
             <button onClick={handleClose} style={{
               padding: '9px 24px', borderRadius: 8, fontSize: 13,
-              background: 'var(--green)', color: '#0a0f1e',
+              background: 'var(--green)', color: 'var(--on-accent)',
               border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700,
             }}>
               Done
@@ -174,7 +174,7 @@ export default function FeedbackButton() {
                 style={{
                   flex: 2, padding: '10px', borderRadius: 8, fontSize: 13, fontWeight: 700,
                   background: canSubmit ? 'var(--green)' : 'var(--surface2)',
-                  color: canSubmit ? '#0a0f1e' : 'var(--text3)',
+                  color: canSubmit ? 'var(--on-accent)' : 'var(--text3)',
                   border: 'none', cursor: canSubmit ? 'pointer' : 'default',
                   fontFamily: 'inherit', transition: 'all 0.15s',
                 }}

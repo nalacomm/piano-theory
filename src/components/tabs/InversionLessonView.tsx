@@ -250,7 +250,7 @@ export default function InversionLessonView({ root, lessonId, inversionType, col
                 padding: '4px 10px', borderRadius: 16, fontSize: 12,
                 cursor: 'pointer', fontFamily: 'inherit',
                 background: active ? def.color : 'var(--surface2)',
-                color: active ? '#0a0f1e' : 'var(--text2)',
+                color: active ? 'var(--on-accent)' : 'var(--text2)',
                 border: `1px solid ${active ? def.color : 'var(--border)'}`,
                 fontWeight: active ? 700 : 400,
               }}>
@@ -269,7 +269,7 @@ export default function InversionLessonView({ root, lessonId, inversionType, col
                 padding: '5px 14px', borderRadius: 16, fontSize: 12,
                 cursor: 'pointer', fontFamily: 'inherit',
                 background: active ? color : 'var(--surface2)',
-                color: active ? '#0a0f1e' : 'var(--text2)',
+                color: active ? 'var(--on-accent)' : 'var(--text2)',
                 border: `1px solid ${active ? color : 'var(--border)'}`,
                 fontWeight: active ? 700 : 400,
               }}>
@@ -296,7 +296,7 @@ export default function InversionLessonView({ root, lessonId, inversionType, col
             </button>
             <button onClick={handlePlay} style={{
               padding: '6px 12px', borderRadius: 6, fontSize: 12,
-              background: color, color: '#0a0f1e',
+              background: color, color: 'var(--on-accent)',
               border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700,
             }}>
               Play
@@ -316,7 +316,7 @@ export default function InversionLessonView({ root, lessonId, inversionType, col
             <div key={i} style={{
               padding: '4px 8px', borderRadius: 4, fontSize: 12, fontWeight: 600,
               background: i === 0 ? color : 'var(--surface2)',
-              color: i === 0 ? '#0a0f1e' : 'var(--text)',
+              color: i === 0 ? 'var(--on-accent)' : 'var(--text)',
               border: `1px solid ${i === 0 ? color : 'var(--border)'}`,
             }}>
               {n}

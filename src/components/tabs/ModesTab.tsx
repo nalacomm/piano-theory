@@ -30,7 +30,8 @@ export default function ModesTab() {
   const chip = (active: boolean, color?: string): React.CSSProperties => ({
     padding: '5px 10px', borderRadius: 20, fontSize: 12, cursor: 'pointer', fontFamily: 'inherit',
     background: active ? (color || 'var(--green)') : 'var(--surface2)',
-    color: active ? '#0a0f1e' : 'var(--text2)',
+    color: active ? 'var(--on-accent)' : 'var(--text2)',
+    fontWeight: active ? 700 : 400,
     border: `1px solid ${active ? (color || 'var(--green)') : 'var(--border)'}`,
   });
 
@@ -77,7 +78,7 @@ export default function ModesTab() {
             <div key={i} style={{
               padding: '3px 8px', borderRadius: 4, fontSize: 12, fontWeight: 600,
               background: i === 0 ? mode.color : 'var(--surface2)',
-              color: i === 0 ? '#0a0f1e' : 'var(--text)',
+              color: i === 0 ? 'var(--on-accent)' : 'var(--text)',
               border: `1px solid ${i === 0 ? mode.color : 'var(--border)'}`,
             }}>
               {d} <span style={{ opacity: 0.6, fontWeight: 400 }}>{scaleNotes[i]}</span>
@@ -110,7 +111,7 @@ export default function ModesTab() {
               <div key={i} style={{
                 padding: '3px 7px', borderRadius: 4, fontSize: 11,
                 background: NOTES[idx] === modeRoot ? mode.color : inMode ? 'var(--surface2)' : 'transparent',
-                color: NOTES[idx] === modeRoot ? '#0a0f1e' : inMode ? 'var(--text)' : 'var(--text3)',
+                color: NOTES[idx] === modeRoot ? 'var(--on-accent)' : inMode ? 'var(--text)' : 'var(--text3)',
                 border: `1px solid ${inMode ? 'var(--border)' : 'transparent'}`,
               }}>
                 {NOTES[idx]}

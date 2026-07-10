@@ -23,7 +23,7 @@ export default function PlayBtn({ onPlay, label = 'Play', color = 'var(--green)'
       style={{
         background: active ? color : 'transparent',
         border: `1px solid ${color}`,
-        color: active ? '#0a0f1e' : color,
+        color: active ? 'var(--on-accent)' : color,
         borderRadius: 'var(--radius-sm)',
         padding: small ? '4px 10px' : '6px 14px',
         fontSize: small ? 11 : 12,

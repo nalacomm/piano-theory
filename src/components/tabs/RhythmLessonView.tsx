@@ -235,7 +235,7 @@ export default function RhythmLessonView({ lessonId, color, onBack, onComplete }
             padding: '5px 12px', borderRadius: 16, fontSize: 12,
             cursor: 'pointer', fontFamily: 'inherit',
             background: section === s.id ? color : 'var(--surface2)',
-            color: section === s.id ? '#0a0f1e' : 'var(--text2)',
+            color: section === s.id ? 'var(--on-accent)' : 'var(--text2)',
             border: `1px solid ${section === s.id ? color : 'var(--border)'}`,
             fontWeight: section === s.id ? 700 : 400,
           }}>
@@ -255,7 +255,7 @@ export default function RhythmLessonView({ lessonId, color, onBack, onComplete }
                   padding: '5px 12px', borderRadius: 16, fontSize: 12,
                   cursor: 'pointer', fontFamily: 'inherit',
                   background: activeNote === n.id ? n.color : 'var(--surface2)',
-                  color: activeNote === n.id ? '#0a0f1e' : 'var(--text2)',
+                  color: activeNote === n.id ? 'var(--on-accent)' : 'var(--text2)',
                   border: `1px solid ${activeNote === n.id ? n.color : 'var(--border)'}`,
                   fontWeight: activeNote === n.id ? 700 : 400,
                 }}>
@@ -274,7 +274,7 @@ export default function RhythmLessonView({ lessonId, color, onBack, onComplete }
               </div>
               <button onClick={handlePlayNote} style={{
                 marginLeft: 'auto', padding: '7px 14px', borderRadius: 6, fontSize: 12, fontWeight: 700,
-                background: selectedNote.color, color: '#0a0f1e',
+                background: selectedNote.color, color: 'var(--on-accent)',
                 border: 'none', cursor: 'pointer', fontFamily: 'inherit',
               }}>
                 Tap
@@ -330,7 +330,7 @@ export default function RhythmLessonView({ lessonId, color, onBack, onComplete }
                   padding: '5px 14px', borderRadius: 8, fontSize: 13, fontWeight: 700,
                   cursor: 'pointer', fontFamily: 'inherit',
                   background: activeTimeSig === t.id ? color : 'var(--surface2)',
-                  color: activeTimeSig === t.id ? '#0a0f1e' : 'var(--text2)',
+                  color: activeTimeSig === t.id ? 'var(--on-accent)' : 'var(--text2)',
                   border: `1px solid ${activeTimeSig === t.id ? color : 'var(--border)'}`,
                 }}>
                   {t.id}
@@ -364,7 +364,7 @@ export default function RhythmLessonView({ lessonId, color, onBack, onComplete }
                   width: 36, height: 36, borderRadius: 6, fontSize: 13, fontWeight: 700,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   background: i === 0 ? color : `${color}28`,
-                  color: i === 0 ? '#0a0f1e' : color,
+                  color: i === 0 ? 'var(--on-accent)' : color,
                   border: `1px solid ${color}`,
                 }}>
                   {i + 1}
@@ -376,7 +376,7 @@ export default function RhythmLessonView({ lessonId, color, onBack, onComplete }
               <div style={{ fontSize: 12, color: 'var(--text3)', fontStyle: 'italic' }}>{selectedTimeSig.feel}</div>
               <button onClick={handlePlayTimeSig} style={{
                 padding: '7px 14px', borderRadius: 6, fontSize: 12, fontWeight: 700,
-                background: color, color: '#0a0f1e',
+                background: color, color: 'var(--on-accent)',
                 border: 'none', cursor: 'pointer', fontFamily: 'inherit',
               }}>
                 Play measure
@@ -505,7 +505,7 @@ export default function RhythmLessonView({ lessonId, color, onBack, onComplete }
               </div>
               <button onClick={handlePlayTempo} style={{
                 padding: '7px 14px', borderRadius: 6, fontSize: 12, fontWeight: 700,
-                background: selectedTempo.color, color: '#0a0f1e',
+                background: selectedTempo.color, color: 'var(--on-accent)',
                 border: 'none', cursor: 'pointer', fontFamily: 'inherit',
               }}>
                 Click

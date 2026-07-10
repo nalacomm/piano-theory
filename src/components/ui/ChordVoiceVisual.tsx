@@ -25,7 +25,7 @@ export default function ChordVoiceVisual({ noteIndices, rootIdx, color = 'var(--
             justifyContent: 'center',
             fontSize: 13,
             fontWeight: 600,
-            color: idx === rootIdx ? '#0a0f1e' : 'var(--text)',
+            color: idx === rootIdx ? 'var(--on-accent)' : 'var(--text)',
             transition: 'all 0.2s',
           }}
         >

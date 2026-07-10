@@ -126,7 +126,7 @@ export default function AskAITab() {
           style={{
             padding: '10px 16px', borderRadius: 8, fontSize: 13, fontWeight: 700,
             background: loading || !input.trim() ? 'var(--surface2)' : 'var(--green)',
-            color: loading || !input.trim() ? 'var(--text3)' : '#0a0f1e',
+            color: loading || !input.trim() ? 'var(--text3)' : 'var(--on-accent)',
             border: 'none', cursor: loading || !input.trim() ? 'default' : 'pointer',
             fontFamily: 'inherit',
           }}>

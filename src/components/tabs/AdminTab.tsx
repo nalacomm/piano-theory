@@ -118,7 +118,8 @@ export default function AdminTab() {
               padding: '5px 14px', borderRadius: 16, fontSize: 12,
               cursor: 'pointer', fontFamily: 'inherit',
               background: active ? 'var(--blue)' : 'var(--surface)',
-              color: active ? '#0a0f1e' : 'var(--text2)',
+              color: active ? 'var(--on-accent)' : 'var(--text2)',
+              fontWeight: active ? 700 : 400,
               border: `1px solid ${active ? 'var(--blue)' : 'var(--border)'}`,
               position: 'relative',
             }}>

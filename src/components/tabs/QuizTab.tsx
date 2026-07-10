@@ -708,7 +708,7 @@ export default function QuizTab() {
 
           <button onClick={restart} style={{
             padding: '10px 24px', borderRadius: 8, fontSize: 14,
-            background: 'var(--green)', color: '#0a0f1e', border: 'none',
+            background: 'var(--green)', color: 'var(--on-accent)', border: 'none',
             cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700,
           }}>
             New Quiz
@@ -818,7 +818,7 @@ export default function QuizTab() {
           )}
           <button onClick={next} style={{
             width: '100%', padding: '12px', borderRadius: 8, fontSize: 14, fontWeight: 700,
-            background: 'var(--green)', color: '#0a0f1e', border: 'none',
+            background: 'var(--green)', color: 'var(--on-accent)', border: 'none',
             cursor: 'pointer', fontFamily: 'inherit',
           }}>
             {idx + 1 >= total ? 'See Results' : 'Next'}

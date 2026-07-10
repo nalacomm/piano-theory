@@ -113,7 +113,7 @@ function StaffSVG({
             <ellipse cx={x} cy={n.y} rx={rx} ry={ry} fill={col} opacity={dim ? 0.3 : 0.9} />
             {!drillNote && (
               <text x={x} y={n.y + fs * 0.38} textAnchor="middle" fontSize={fs} fontWeight="700"
-                fill="#0a0f1e" opacity={dim ? 0.3 : 1}
+                fill="var(--on-accent)" opacity={dim ? 0.3 : 1}
                 style={{ userSelect: 'none', pointerEvents: 'none' }}>
                 {n.display}
               </text>
@@ -142,7 +142,7 @@ function MnemonicCard({ title, phrase, letters, color }: {
           <div key={i} style={{
             width: 32, height: 32, borderRadius: 6, fontSize: 14, fontWeight: 700,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            background: color, color: '#0a0f1e',
+            background: color, color: 'var(--on-accent)',
           }}>{l}</div>
         ))}
       </div>
@@ -185,7 +185,7 @@ function ClefSection({ clef, notes, color }: { clef: 'treble' | 'bass'; notes: S
               padding: '4px 11px', borderRadius: 14, fontSize: 11,
               cursor: 'pointer', fontFamily: 'inherit',
               background: filter === f ? color : 'var(--surface2)',
-              color: filter === f ? '#0a0f1e' : 'var(--text3)',
+              color: filter === f ? 'var(--on-accent)' : 'var(--text3)',
               border: `1px solid ${filter === f ? color : 'var(--border)'}`,
               fontWeight: filter === f ? 700 : 400,
             }}>
@@ -299,7 +299,7 @@ function DrillSection({ color }: { color: string }) {
             <button key={c} onClick={() => changeClef(c)} style={{
               padding: '4px 12px', borderRadius: 14, fontSize: 11, cursor: 'pointer', fontFamily: 'inherit',
               background: clef === c ? color : 'var(--surface2)',
-              color: clef === c ? '#0a0f1e' : 'var(--text3)',
+              color: clef === c ? 'var(--on-accent)' : 'var(--text3)',
               border: `1px solid ${clef === c ? color : 'var(--border)'}`,
               fontWeight: clef === c ? 700 : 400,
             }}>
@@ -359,7 +359,7 @@ function DrillSection({ color }: { color: string }) {
           </div>
           <button onClick={() => advance(note, clef)} style={{
             width: '100%', padding: '11px', borderRadius: 8, fontSize: 14, fontWeight: 700,
-            background: color, color: '#0a0f1e', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+            background: color, color: 'var(--on-accent)', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
           }}>
             Next note →
           </button>
@@ -473,7 +473,7 @@ export default function SightReadingLessonView({ lessonId, color, onBack, onComp
             padding: '5px 12px', borderRadius: 16, fontSize: 12,
             cursor: 'pointer', fontFamily: 'inherit',
             background: section === s.id ? color : 'var(--surface2)',
-            color: section === s.id ? '#0a0f1e' : 'var(--text2)',
+            color: section === s.id ? 'var(--on-accent)' : 'var(--text2)',
             border: `1px solid ${section === s.id ? color : 'var(--border)'}`,
             fontWeight: section === s.id ? 700 : 400,
           }}>
