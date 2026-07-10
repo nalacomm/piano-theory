@@ -139,6 +139,81 @@ function generateKeyboardQuestions(): KeyboardQuestion[] {
   return qs;
 }
 
+// ── Notation MC questions (from Lesson 4) ──────────────────────────────────────
+
+const NOTATION_MC: MCQuestion[] = [
+  {
+    kind: 'mc',
+    prompt: 'Which mnemonic helps remember treble clef LINE notes (E G B D F)?',
+    answer: 'Every Good Boy Does Fine',
+    choices: ['FACE', 'All Cows Eat Grass', 'Every Good Boy Does Fine', 'Good Boys Do Fine Always'],
+    explanation: 'Lines from bottom to top: E-G-B-D-F. "Every Good Boy Does Fine" — first letter of each line note. FACE is for the spaces.',
+  },
+  {
+    kind: 'mc',
+    prompt: 'Treble clef SPACES (F A C E) are remembered how?',
+    answer: 'They spell the word FACE',
+    choices: ['Good Boys Do Fine Always', 'They spell the word FACE', 'Every Good Boy Does Fine', 'All Cows Eat Grass'],
+    explanation: 'Treble clef spaces from bottom to top are F-A-C-E — they literally spell the word FACE. First space = F, second = A, third = C, fourth = E.',
+  },
+  {
+    kind: 'mc',
+    prompt: 'What note is on the 2nd line of the treble clef?',
+    answer: 'G',
+    choices: ['E', 'F', 'G', 'A'],
+    explanation: 'Lines (bottom to top): E G B D F. "Every GOOD Boy Does Fine" — G is "Good." It sits on the second line from the bottom.',
+  },
+  {
+    kind: 'mc',
+    prompt: 'Middle C (C4) appears where on the staff?',
+    answer: 'On a ledger line just below the treble clef',
+    choices: ['On the bottom line of treble clef', 'On a ledger line just below the treble clef', 'On the top line of the bass clef', 'In the first space of treble clef'],
+    explanation: 'Middle C sits on a short ledger line just below the treble staff. In bass clef it sits on a ledger line just above the staff. It is the bridge between both staves.',
+  },
+  {
+    kind: 'mc',
+    prompt: 'Bass clef line notes (G B D F A) are remembered with?',
+    answer: 'Good Boys Do Fine Always',
+    choices: ['FACE', 'Every Good Boy Does Fine', 'Good Boys Do Fine Always', 'All Cows Eat Grass'],
+    explanation: 'Bass clef lines bottom to top: G-B-D-F-A. "Good Boys Do Fine Always" — first letter of each line note.',
+  },
+  {
+    kind: 'mc',
+    prompt: 'Bass clef space notes (A C E G) are remembered with?',
+    answer: 'All Cows Eat Grass',
+    choices: ['Every Good Boy Does Fine', 'All Cows Eat Grass', 'Good Boys Do Fine Always', 'FACE'],
+    explanation: 'Bass clef spaces bottom to top: A-C-E-G. "All Cows Eat Grass" — first letter of each space note.',
+  },
+  {
+    kind: 'mc',
+    prompt: 'What note is in the 1st space of the treble clef?',
+    answer: 'F',
+    choices: ['E', 'F', 'G', 'A'],
+    explanation: 'Treble spaces spell FACE from bottom to top. First (bottom) space = F4. It sits between line 1 (E4) and line 2 (G4).',
+  },
+  {
+    kind: 'mc',
+    prompt: 'In the grand staff, which clef covers the right hand?',
+    answer: 'Treble clef',
+    choices: ['Bass clef', 'Treble clef', 'Alto clef', 'Both clefs equally'],
+    explanation: 'Treble clef (C4 and above) covers the right hand. Bass clef (B3 and below) covers the left hand. Middle C is the reference point connecting both staves.',
+  },
+  {
+    kind: 'mc',
+    prompt: 'What note is on the middle (3rd) line of the treble clef?',
+    answer: 'B',
+    choices: ['A', 'B', 'C', 'D'],
+    explanation: 'Treble clef lines (bottom to top): E G B D F. The 3rd (middle) line is B4 — "Every Good BOY Does Fine."',
+  },
+  {
+    kind: 'mc',
+    prompt: 'Which note is in the top space (space 4) of the treble clef?',
+    answer: 'E',
+    choices: ['C', 'D', 'E', 'F'],
+    explanation: 'Treble clef spaces spell FACE: F(space 1) A(space 2) C(space 3) E(space 4). The top space is E5.',
+  },
+];
+
 const MC_EXPLANATIONS: Record<string, string> = {
   'Dorian differs from natural minor by which degree?': 'Dorian has a natural (raised) 6th compared to Aeolian (natural minor). Both have ♭3 and ♭7. That raised 6 is what gives Dorian its warmer, less dark sound.',
   "Lydian's signature note vs major scale?": 'Lydian is a major scale with only one change — the 4th is raised by a half step (♯4). This creates a dreamy, floating quality because of the tritone between the root and the 4th.',
@@ -163,19 +238,21 @@ const MC_EXPLANATIONS: Record<string, string> = {
 };
 
 function buildQuestionPool(): AnyQuestion[] {
-  const mc: MCQuestion[] = QUIZ_QUESTIONS.map(q => ({
+  const theoryMC: MCQuestion[] = QUIZ_QUESTIONS.map(q => ({
     kind: 'mc', prompt: q.q, answer: q.a, choices: q.c,
     explanation: MC_EXPLANATIONS[q.q],
   }));
+  // Pick a random 4 notation questions per session so they vary but don't dominate
+  const notationSample = shuffle(NOTATION_MC).slice(0, 4);
+  const allMC = shuffle([...theoryMC, ...notationSample]);
   const kb = generateKeyboardQuestions();
   // Interleave: roughly 60% MC, 40% keyboard
   const pool: AnyQuestion[] = [];
-  const shuffledMC = shuffle(mc);
   const shuffledKB = shuffle(kb);
   let mi = 0, ki = 0;
-  while (mi < shuffledMC.length || ki < shuffledKB.length) {
-    if (mi < shuffledMC.length) pool.push(shuffledMC[mi++]);
-    if (mi < shuffledMC.length) pool.push(shuffledMC[mi++]);
+  while (mi < allMC.length || ki < shuffledKB.length) {
+    if (mi < allMC.length) pool.push(allMC[mi++]);
+    if (mi < allMC.length) pool.push(allMC[mi++]);
     if (ki < shuffledKB.length) pool.push(shuffledKB[ki++]);
   }
   return shuffle(pool).slice(0, 20);
