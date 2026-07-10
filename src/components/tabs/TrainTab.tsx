@@ -508,6 +508,13 @@ const LESSONS: Lesson[] = [
 
 const CATEGORIES = ['Fundamentals', 'Modes', 'Scales', 'Chords'] as const;
 
+const BEGINNER_PATH = [
+  'fund-major', 'fund-intervals', 'fund-numbers', 'fund-rhythm', 'fund-notation',
+  'mode-ionian', 'mode-dorian', 'mode-aeolian',
+  'scale-minor-penta', 'scale-blues',
+  'chord-triads', 'chord-sus', 'chord-sevenths', 'chord-progressions',
+];
+
 async function fetchProgress(): Promise<string[]> {
   try {
     const r = await fetch('/api/progress');
@@ -773,6 +780,48 @@ export default function TrainTab() {
           {Math.round((doneCount / totalLessons) * 100)}%
         </div>
       </div>
+
+      {progressLoaded && (() => {
+        const nextId = BEGINNER_PATH.find(id => !completed.has(id));
+        if (!nextId) return null;
+        const nextLesson = LESSONS.find(l => l.id === nextId);
+        if (!nextLesson) return null;
+        const pathDone = BEGINNER_PATH.filter(id => completed.has(id)).length;
+        const pathPct = Math.round((pathDone / BEGINNER_PATH.length) * 100);
+        return (
+          <div style={{ ...card, borderLeft: '3px solid var(--blue)' }}>
+            <div style={{ fontSize: 10, color: 'var(--blue)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 700 }}>
+              Recommended next
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>{nextLesson.title}</div>
+                <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>{nextLesson.subtitle}</div>
+              </div>
+              <button
+                onClick={() => setActiveLesson(nextLesson)}
+                style={{
+                  padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 700,
+                  background: 'var(--blue)', color: 'var(--on-accent)', border: 'none',
+                  cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0, marginLeft: 12,
+                }}
+              >
+                Start
+              </button>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
+              <div style={{ fontSize: 11, color: 'var(--text3)' }}>{pathDone}/{BEGINNER_PATH.length} path lessons done</div>
+              <div style={{ fontSize: 11, color: 'var(--text3)' }}>{pathPct}%</div>
+            </div>
+            <div style={{ marginTop: 5, height: 4, background: 'var(--surface2)', borderRadius: 2 }}>
+              <div style={{
+                height: '100%', borderRadius: 2, background: 'var(--blue)',
+                width: `${pathPct}%`, transition: 'width 0.3s',
+              }} />
+            </div>
+          </div>
+        );
+      })()}
 
       <div style={card}>
         <div style={{ fontSize: 11, color: 'var(--text3)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1 }}>Root key</div>
