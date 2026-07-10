@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { useAudio } from '@/hooks/useAudio';
 import AuthGate from './AuthGate';
@@ -26,6 +26,39 @@ const BASE_TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'quiz',   label: 'Quiz',    icon: '?' },
   { id: 'ai',     label: 'Ask AI',  icon: '✦' },
 ];
+
+function ThemeToggle() {
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
+  useEffect(() => {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light') setTheme('light');
+  }, []);
+
+  function toggle() {
+    const next = theme === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    localStorage.setItem('theme', next);
+    if (next === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+  }
+
+  return (
+    <button
+      onClick={toggle}
+      title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      style={{
+        background: 'none', border: 'none', cursor: 'pointer', padding: '2px 4px',
+        fontSize: 16, lineHeight: 1, color: 'var(--text3)',
+      }}
+    >
+      {theme === 'dark' ? '☀' : '☾'}
+    </button>
+  );
+}
 
 function UserChip() {
   const { data: session } = useSession();
@@ -126,6 +159,7 @@ function App() {
           {audioUnlocked && (
             <span style={{ fontSize: 10, color: 'var(--green)' }}>♪ Audio On</span>
           )}
+          <ThemeToggle />
           <UserChip />
         </div>
       </div>
