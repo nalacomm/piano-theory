@@ -36,33 +36,33 @@ export default function CircleTab() {
             return (
               <g key={k.note} onClick={() => setSelected(k)} style={{ cursor: 'pointer' }}>
                 <circle cx={x} cy={y} r={20}
-                  fill={isSelected ? '#4ade80' : '#1e293b'}
-                  stroke={isSelected ? '#4ade80' : '#334155'}
+                  fill={isSelected ? 'var(--green)' : 'var(--surface2)'}
+                  stroke={isSelected ? 'var(--green)' : 'var(--text3)'}
                   strokeWidth={1.5}
                 />
                 <text x={x} y={y + 1} textAnchor="middle" dominantBaseline="middle"
-                  fontSize={11} fontWeight={700} fill={isSelected ? '#0a0f1e' : '#f1f5f9'}
+                  fontSize={11} fontWeight={700} fill={isSelected ? 'var(--bg)' : 'var(--text)'}
                   fontFamily="'Courier New', monospace">
                   {k.note}
                 </text>
                 <circle cx={xi} cy={yi} r={15}
-                  fill={isSelected ? 'rgba(74,222,128,0.15)' : '#111827'}
-                  stroke={isSelected ? '#4ade80' : '#1e293b'}
-                  strokeWidth={1}
+                  fill="var(--surface)"
+                  stroke={isSelected ? 'var(--green)' : 'var(--border)'}
+                  strokeWidth={isSelected ? 2 : 1}
                 />
                 <text x={xi} y={yi + 1} textAnchor="middle" dominantBaseline="middle"
-                  fontSize={8} fill={isSelected ? '#4ade80' : '#8fa3b8'}
+                  fontSize={8} fill={isSelected ? 'var(--green)' : 'var(--text2)'}
                   fontFamily="'Courier New', monospace">
                   {k.minor.replace(' minor', 'm')}
                 </text>
               </g>
             );
           })}
-          <circle cx={cx} cy={cy} r={30} fill="#111827" stroke="#1e293b" strokeWidth={1} />
-          <text x={cx} y={cy - 8} textAnchor="middle" fontSize={14} fontWeight={700} fill="#4ade80" fontFamily="'Courier New', monospace">
+          <circle cx={cx} cy={cy} r={30} fill="var(--surface2)" stroke="var(--border)" strokeWidth={1} />
+          <text x={cx} y={cy - 8} textAnchor="middle" fontSize={14} fontWeight={700} fill="var(--green)" fontFamily="'Courier New', monospace">
             {selected.note}
           </text>
-          <text x={cx} y={cy + 8} textAnchor="middle" fontSize={9} fill="#8fa3b8" fontFamily="'Courier New', monospace">
+          <text x={cx} y={cy + 8} textAnchor="middle" fontSize={9} fill="var(--text2)" fontFamily="'Courier New', monospace">
             {selected.sharps > 0 ? `${selected.sharps}#` : selected.sharps < 0 ? `${Math.abs(selected.sharps)}b` : '0 acc'}
           </text>
         </svg>
