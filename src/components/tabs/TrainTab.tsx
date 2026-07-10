@@ -5,6 +5,7 @@ import { playScaleUp, playChordTogether } from '@/lib/audio';
 import PianoKeys from '@/components/ui/PianoKeys';
 import SheetMusic from '@/components/ui/SheetMusic';
 import InversionLessonView from '@/components/tabs/InversionLessonView';
+import ProgressionLessonView from '@/components/tabs/ProgressionLessonView';
 
 // ── Lesson data ──
 
@@ -22,6 +23,7 @@ interface Lesson {
   subtitle: string;
   color: string;
   inversionType?: 'triads' | 'sevenths';
+  progressionLesson?: boolean;
   intro?: string;
   keyFacts?: string[];
   identTip?: string;
@@ -458,6 +460,14 @@ const LESSONS: Lesson[] = [
     },
   },
   {
+    id: 'chord-progressions',
+    category: 'Chords',
+    title: 'Progressions & Cadences',
+    subtitle: 'How chords move and resolve',
+    color: '#f472b6',
+    progressionLesson: true,
+  },
+  {
     id: 'chord-triad-inv',
     category: 'Chords',
     title: 'Triads in Inversion',
@@ -683,6 +693,17 @@ export default function TrainTab() {
           root={root}
           lessonId={activeLesson.id}
           inversionType={activeLesson.inversionType}
+          color={activeLesson.color}
+          onBack={handleBack}
+          onComplete={handleComplete}
+        />
+      );
+    }
+    if (activeLesson.progressionLesson) {
+      return (
+        <ProgressionLessonView
+          root={root}
+          lessonId={activeLesson.id}
           color={activeLesson.color}
           onBack={handleBack}
           onComplete={handleComplete}
