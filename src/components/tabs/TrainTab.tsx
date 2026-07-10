@@ -7,6 +7,7 @@ import SheetMusic from '@/components/ui/SheetMusic';
 import InversionLessonView from '@/components/tabs/InversionLessonView';
 import ProgressionLessonView from '@/components/tabs/ProgressionLessonView';
 import RhythmLessonView from '@/components/tabs/RhythmLessonView';
+import SightReadingLessonView from '@/components/tabs/SightReadingLessonView';
 
 // ── Lesson data ──
 
@@ -26,6 +27,7 @@ interface Lesson {
   inversionType?: 'triads' | 'sevenths';
   progressionLesson?: boolean;
   rhythmLesson?: boolean;
+  notationLesson?: boolean;
   intro?: string;
   keyFacts?: string[];
   identTip?: string;
@@ -470,6 +472,14 @@ const LESSONS: Lesson[] = [
     rhythmLesson: true,
   },
   {
+    id: 'fund-notation',
+    category: 'Fundamentals',
+    title: 'Notation & Sight-Reading',
+    subtitle: 'Reading notes on the staff',
+    color: '#34d399',
+    notationLesson: true,
+  },
+  {
     id: 'chord-progressions',
     category: 'Chords',
     title: 'Progressions & Cadences',
@@ -723,6 +733,17 @@ export default function TrainTab() {
     if (activeLesson.rhythmLesson) {
       return (
         <RhythmLessonView
+          root={root}
+          lessonId={activeLesson.id}
+          color={activeLesson.color}
+          onBack={handleBack}
+          onComplete={handleComplete}
+        />
+      );
+    }
+    if (activeLesson.notationLesson) {
+      return (
+        <SightReadingLessonView
           root={root}
           lessonId={activeLesson.id}
           color={activeLesson.color}
