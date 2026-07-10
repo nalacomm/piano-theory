@@ -5,6 +5,7 @@ import { playScaleUp, playChordTogether, playSingleNote } from '@/lib/audio';
 import MiniKeyboard from '@/components/ui/MiniKeyboard';
 import PianoKeys from '@/components/ui/PianoKeys';
 import type { ScaleKey, ChordKey, ModeKey } from '@/types';
+import QuickFeedback from '@/components/ui/QuickFeedback';
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -713,6 +714,7 @@ export default function QuizTab() {
           }}>
             New Quiz
           </button>
+          <QuickFeedback />
         </div>
       </div>
     );

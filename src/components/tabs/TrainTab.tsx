@@ -8,6 +8,7 @@ import InversionLessonView from '@/components/tabs/InversionLessonView';
 import ProgressionLessonView from '@/components/tabs/ProgressionLessonView';
 import RhythmLessonView from '@/components/tabs/RhythmLessonView';
 import SightReadingLessonView from '@/components/tabs/SightReadingLessonView';
+import QuickFeedback from '@/components/ui/QuickFeedback';
 
 // ── Lesson data ──
 
@@ -667,6 +668,7 @@ function LessonView({
             {lesson.checkQ.explanation}
           </div>
         )}
+        {checkAnswered && checkPicked === lesson.checkQ.answer && <QuickFeedback />}
       </div>
     </div>
   );
