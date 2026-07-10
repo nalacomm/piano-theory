@@ -15,7 +15,7 @@ interface FeedbackRow {
   created_at: string;
 }
 
-const TOTAL_LESSONS = 17;
+const TOTAL_LESSONS = 19;
 
 export default function AdminTab() {
   const [users, setUsers] = useState<UserRow[]>([]);

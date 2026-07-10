@@ -4,6 +4,7 @@ import { NOTES, buildScale, buildChord, SCALE_FORMULAS, CHORD_TYPES, MODE_DATA }
 import { playScaleUp, playChordTogether } from '@/lib/audio';
 import PianoKeys from '@/components/ui/PianoKeys';
 import SheetMusic from '@/components/ui/SheetMusic';
+import InversionLessonView from '@/components/tabs/InversionLessonView';
 
 // ── Lesson data ──
 
@@ -20,14 +21,15 @@ interface Lesson {
   title: string;
   subtitle: string;
   color: string;
-  intro: string;
-  keyFacts: string[];
-  identTip: string;
-  noteBuilder: (root: string) => number[];
-  layout: 'scale' | 'chord';
-  playFn: (notes: string[]) => void;
-  playLabel: string;
-  checkQ: CheckQ;
+  inversionType?: 'triads' | 'sevenths';
+  intro?: string;
+  keyFacts?: string[];
+  identTip?: string;
+  noteBuilder?: (root: string) => number[];
+  layout?: 'scale' | 'chord';
+  playFn?: (notes: string[]) => void;
+  playLabel?: string;
+  checkQ?: CheckQ;
 }
 
 const LESSONS: Lesson[] = [
@@ -455,6 +457,22 @@ const LESSONS: Lesson[] = [
       explanation: 'Sus = suspended. The 3rd is removed and replaced by either a 2nd (sus2) or 4th (sus4). No 3rd means no major or minor quality.',
     },
   },
+  {
+    id: 'chord-triad-inv',
+    category: 'Chords',
+    title: 'Triads in Inversion',
+    subtitle: 'Rearranging the bass note',
+    color: '#22d3ee',
+    inversionType: 'triads',
+  },
+  {
+    id: 'chord-7th-inv',
+    category: 'Chords',
+    title: '7th Chord Inversions',
+    subtitle: 'Root through 3rd inversion',
+    color: '#a78bfa',
+    inversionType: 'sevenths',
+  },
 ];
 
 const CATEGORIES = ['Fundamentals', 'Modes', 'Scales', 'Chords'] as const;
@@ -480,10 +498,12 @@ async function saveProgress(ids: string[]): Promise<void> {
 
 // ── Lesson viewer ──
 
+type StaticLesson = Required<Omit<Lesson, 'inversionType'>>;
+
 function LessonView({
   lesson, root, onBack, onComplete,
 }: {
-  lesson: Lesson;
+  lesson: StaticLesson;
   root: string;
   onBack: () => void;
   onComplete: (id: string) => void;
@@ -657,7 +677,19 @@ export default function TrainTab() {
   };
 
   if (activeLesson) {
-    return <LessonView lesson={activeLesson} root={root} onBack={handleBack} onComplete={handleComplete} />;
+    if (activeLesson.inversionType) {
+      return (
+        <InversionLessonView
+          root={root}
+          lessonId={activeLesson.id}
+          inversionType={activeLesson.inversionType}
+          color={activeLesson.color}
+          onBack={handleBack}
+          onComplete={handleComplete}
+        />
+      );
+    }
+    return <LessonView lesson={activeLesson as Required<Lesson>} root={root} onBack={handleBack} onComplete={handleComplete} />;
   }
 
   const totalLessons = LESSONS.length;
