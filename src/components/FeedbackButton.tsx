@@ -60,15 +60,16 @@ export default function FeedbackButton() {
         onClick={() => setOpen(true)}
         style={{
           position: 'fixed', bottom: 24, right: 16, zIndex: 50,
-          width: 44, height: 44, borderRadius: '50%',
+          display: 'flex', alignItems: 'center', gap: 6,
+          padding: '8px 14px', borderRadius: 20,
           background: 'var(--surface2)', border: '1px solid var(--border)',
-          color: 'var(--text3)', fontSize: 18, cursor: 'pointer',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 2px 12px rgba(0,0,0,0.4)',
+          color: 'var(--text2)', fontSize: 13, fontWeight: 600,
+          cursor: 'pointer', fontFamily: "'Courier New', Courier, monospace",
+          boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
         }}
-        title="Give feedback"
       >
-        💬
+        <span style={{ fontSize: 14, color: 'var(--amber)' }}>★</span>
+        Rate the app
       </button>
 
       {/* Backdrop */}
