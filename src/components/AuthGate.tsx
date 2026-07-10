@@ -48,12 +48,22 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
               <path d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
               <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
             </svg>
-            Sign in with Google
+            Continue with Google
           </button>
 
-          <div style={{ marginTop: 28, fontSize: 11, color: 'var(--text3)', lineHeight: 1.7 }}>
-            Sign in once. Your lesson progress and quiz scores<br />
-            sync automatically across any device.
+          <div style={{ marginTop: 12, fontSize: 12, color: 'var(--text3)' }}>
+            No password needed — just your Google account.
+          </div>
+
+          <div style={{
+            marginTop: 28, padding: '12px 14px', borderRadius: 8,
+            background: 'var(--surface)', border: '1px solid var(--border)',
+            fontSize: 12, color: 'var(--text2)', lineHeight: 1.7, textAlign: 'left',
+          }}>
+            <div style={{ fontWeight: 600, color: 'var(--text)', marginBottom: 6 }}>What gets saved to your account:</div>
+            <div>Lesson completions</div>
+            <div>Quiz scores and weak-topic tracking</div>
+            <div>Works across all your devices</div>
           </div>
         </div>
       </div>
