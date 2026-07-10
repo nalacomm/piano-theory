@@ -446,6 +446,93 @@ function KeyboardQ({ q, onCorrect, onWrong }: {
   );
 }
 
+// ── Inline issue reporter ──────────────────────────────────────────────────────
+
+function ReportButton({ question, topic }: { question: AnyQuestion; topic: Topic }) {
+  const [open,      setOpen]      = useState(false);
+  const [note,      setNote]      = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [sending,   setSending]   = useState(false);
+
+  async function submit() {
+    if (sending) return;
+    setSending(true);
+    try {
+      await fetch('/api/issues', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question_prompt: question.prompt,
+          question_topic: topic,
+          note: note.trim() || undefined,
+        }),
+      });
+    } catch { /* silent */ }
+    setSending(false);
+    setSubmitted(true);
+  }
+
+  if (submitted) {
+    return (
+      <div style={{ fontSize: 11, color: 'var(--text3)', textAlign: 'right', marginTop: 6 }}>
+        Issue reported — thanks.
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ marginTop: 6 }}>
+      {!open ? (
+        <button onClick={() => setOpen(true)} style={{
+          background: 'none', border: 'none', cursor: 'pointer',
+          fontSize: 11, color: 'var(--text3)', padding: 0, fontFamily: 'inherit',
+          float: 'right',
+        }}>
+          ⚑ Report an issue
+        </button>
+      ) : (
+        <div style={{
+          padding: '10px 12px', borderRadius: 8, marginTop: 4,
+          background: 'var(--surface2)', border: '1px solid var(--border)',
+        }}>
+          <div style={{ fontSize: 11, color: 'var(--text3)', marginBottom: 6 }}>
+            What's wrong with this question? (optional)
+          </div>
+          <textarea
+            value={note}
+            onChange={e => setNote(e.target.value)}
+            placeholder="Wrong answer, unclear wording, typo…"
+            rows={2}
+            style={{
+              width: '100%', boxSizing: 'border-box', padding: '7px 9px',
+              borderRadius: 6, border: '1px solid var(--border)',
+              background: 'var(--surface)', color: 'var(--text)',
+              fontSize: 12, fontFamily: 'inherit', resize: 'none',
+              marginBottom: 8,
+            }}
+          />
+          <div style={{ display: 'flex', gap: 6 }}>
+            <button onClick={submit} disabled={sending} style={{
+              padding: '6px 14px', borderRadius: 6, fontSize: 12, fontWeight: 700,
+              background: 'var(--red)', color: '#fff', border: 'none',
+              cursor: sending ? 'default' : 'pointer', fontFamily: 'inherit', opacity: sending ? 0.6 : 1,
+            }}>
+              {sending ? 'Sending…' : 'Report'}
+            </button>
+            <button onClick={() => { setOpen(false); setNote(''); }} style={{
+              padding: '6px 12px', borderRadius: 6, fontSize: 12,
+              background: 'none', border: '1px solid var(--border)',
+              color: 'var(--text3)', cursor: 'pointer', fontFamily: 'inherit',
+            }}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Weak topic banner ──────────────────────────────────────────────────────────
 
 const TOPIC_LABELS: Record<Topic, string> = {
@@ -675,6 +762,7 @@ export default function QuizTab() {
             {(q as KeyboardQuestion).hint}
           </div>
         )}
+        <ReportButton question={q} topic={q.kind === 'mc' ? (q as MCQuestion).topic : (q as KeyboardQuestion).topic} />
       </div>
 
       {!isKB && (
