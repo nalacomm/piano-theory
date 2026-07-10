@@ -29,7 +29,7 @@ body { font-family: 'Courier New', Courier, monospace; background: var(--bg); co
   --surface: #ffffff;
   --surface2: #f1f5f9;
   --border: #e2e8f0;
-  --text: #0a0f1e;
+  --text: #000000;
   --text2: #1e293b;
   --text3: #334155;
   --green: #16a34a;
